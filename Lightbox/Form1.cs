@@ -56,9 +56,6 @@ namespace Lightbox
             this.LostFocus += onClick;
             this.KeyDown += onKey;
             this.Closed += onClosed;
-
-            pictureBox1.Click += onClick;
-            // pictureBox1.MouseWheel += onWheel;
         }
 
         // Close action: toggled by 
@@ -76,6 +73,39 @@ namespace Lightbox
         public void onClosed(object sender, EventArgs args)
         {
             pictureBox1.Image.Dispose();
+        }
+
+        //  emulate the behaviour of windows with borders for moving and resizing
+        protected override void WndProc(ref Message m) {
+            const int gripSize = 16;
+            const int captionSize = 32;
+
+            const int WM_NCHITTEST = 0x84;
+            const int WM_SETCUROR = 0x20;
+
+            IntPtr HTCAPTION = (IntPtr)2;
+            IntPtr HTBOTTOMRIGHT = (IntPtr)17;
+
+            if (m.Msg == WM_NCHITTEST) {
+                Point pos = new Point(m.LParam.ToInt32() & 0xffff, m.LParam.ToInt32() >> 16);
+                pos = this.PointToClient(pos);
+                if (pos.Y < captionSize) {
+                    m.Result = HTCAPTION;
+                    return;
+                }
+                if (pos.X >= this.ClientSize.Width - gripSize && pos.Y >= this.ClientSize.Height - gripSize) {
+                    m.Result = HTBOTTOMRIGHT;
+                    return;
+                }
+            }
+            else if (m.Msg == WM_SETCUROR) {
+                if ((m.LParam.ToInt32() & 0xffff) == (int)HTCAPTION) {
+                    Cursor.Current = Cursors.Hand;
+                    m.Result = (IntPtr)1;  // Processed
+                    return;
+                }
+            }
+            base.WndProc(ref m);
         }
     }
 }

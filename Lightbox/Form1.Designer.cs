@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
         	System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-        	this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pictureBox1 = new Lightbox.PictureBox1();
         	((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
         	this.SuspendLayout();
         	// 
@@ -60,7 +60,7 @@
 
         #endregion
 
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private Lightbox.PictureBox1 pictureBox1;
     }
 }
 
